@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class CharacterCollectionViewCell: UICollectionViewCell {
+final class CharactersCollectionViewCell: UICollectionViewCell {
     static let cellIdentifier = "CharacterCollectionViewCell"
     
     private let imageView: UIImageView = {
@@ -49,7 +49,7 @@ final class CharacterCollectionViewCell: UICollectionViewCell {
 }
 
 //MARK: - SetupUI
-extension CharacterCollectionViewCell {
+extension CharactersCollectionViewCell {
     private func setupUI() {
         contentView.addSubviews(imageView, nameLabel)
         

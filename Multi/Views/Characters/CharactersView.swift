@@ -15,8 +15,8 @@ final class CharactersView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = UIColor(red: 4/255, green: 12/255, blue: 30/255, alpha: 1)
-        collectionView.register(CharacterCollectionViewCell.self,
-                                forCellWithReuseIdentifier: CharacterCollectionViewCell.cellIdentifier)
+        collectionView.register(CharactersCollectionViewCell.self,
+                                forCellWithReuseIdentifier: CharactersCollectionViewCell.cellIdentifier)
         return collectionView
     }()
     

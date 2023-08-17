@@ -1,7 +1,8 @@
 
 import UIKit
+import SwiftUI
 
-final class CharacterViewController: UIViewController {
+final class CharactersViewController: UIViewController {
     private lazy var charactersView: CharactersView = { [unowned self] in
         let view = CharactersView()
         view.delegate = self
@@ -19,17 +20,16 @@ final class CharacterViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let nav = self.navigationController?.navigationBar
+        nav?.prefersLargeTitles = true
+        navigationItem.title = "Characters"
         nav?.barStyle = UIBarStyle.black
         nav?.tintColor = .systemBackground
         nav?.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Characters"
         fetchCharacters()
     }
     
@@ -47,21 +47,21 @@ final class CharacterViewController: UIViewController {
     }
 }
 
-extension CharacterViewController: CharactersViewDelegate {
+extension CharactersViewController: CharactersViewDelegate {
     func charactersViewDidLoad() {
 
     }
 }
 
 // MARK: - CollectionView Delegates
-extension CharacterViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension CharactersViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         charactersData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CharacterCollectionViewCell", for: indexPath)
-                as? CharacterCollectionViewCell else {
+                as? CharactersCollectionViewCell else {
             return UICollectionViewCell()
         }
         
@@ -79,5 +79,19 @@ extension CharacterViewController: UICollectionViewDataSource, UICollectionViewD
         let height = width * 1.2
         
         return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let character = charactersData[indexPath.row]
+        
+        let detailView = UIHostingController(rootView: DetailSwiftUIView(character: character))
+        detailView.view.frame = UIScreen.main.bounds
+        
+        self.navigationItem.title = ""
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        self.navigationController?.navigationBar.tintColor = .white
+        
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
