@@ -98,32 +98,29 @@ struct DetailSwiftUIView: View {
                         .foregroundColor(.white)
                         .padding(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                     
-                    HStack {
-                        ZStack {
-                            Color(hex: "#191C2A").frame(width: 64, height: 64)
-                            Image("Planet")
-                                .resizable()
-                                .frame(width: 22, height: 22)
-                        }
-                        .aspectRatio(contentMode: .fit)
-                        .cornerRadius(10)
-                        
-                        VStack(alignment: .leading, spacing: 8) {
+                    ForEach(character.episode, id: \.self) { episode in
+                        VStack(alignment: .leading) {
                             Text(location.name)
                                 .font(.system(size: 17, weight: .bold))
                                 .foregroundColor(.white)
-                            Text(location.type)
-                                .font(.system(size: 13))
-                                .foregroundColor(.green)
+                            
+                            HStack() {
+                                Text(location.name)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.green)
+                                Spacer()
+                                Text(location.type)
+                                    .font(.system(size: 13))
+                                    .foregroundColor(Color(hex: "#93989C"))
+                            }
+                            .padding(.init(top: 9, leading: 0, bottom: 3, trailing: 0))
+                            .foregroundColor(.white)
                         }
-                        .padding(.leading, 9)
-                        .foregroundColor(.white)
-                        Spacer()
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color(hex: "#262A38"))
+                        .cornerRadius(16)
                     }
-                    .padding(8)
-                    .frame(maxWidth: .infinity)
-                    .background(Color(hex: "#262A38"))
-                    .cornerRadius(16)
                 }
                 Spacer()
             }
