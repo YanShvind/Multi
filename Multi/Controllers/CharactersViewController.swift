@@ -85,23 +85,42 @@ extension CharactersViewController: UICollectionViewDataSource, UICollectionView
         collectionView.deselectItem(at: indexPath, animated: true)
         let character = charactersData[indexPath.row]
         
+        let group = DispatchGroup()
+        
+        var location: Location?
+        var episode: [Episode]?
+        
+        group.enter()
         Request.shared.getLocationById(id: character.id) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let location):
-                    let detailView = UIHostingController(rootView: DetailSwiftUIView(character: character, location: location))
-                    detailView.view.frame = UIScreen.main.bounds
-                    
-                    self.navigationItem.title = ""
-                    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-                    self.navigationController?.navigationBar.tintColor = .white
-                    
-                    self.navigationController?.pushViewController(detailView, animated: true)
-                    
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
-                }
+            switch result {
+            case .success(let receivedLocation):
+                location = receivedLocation
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
             }
+            group.leave()
+        }
+        
+        group.enter()
+        Request.shared.getEpisodesForCharacter(characterName: character.name) { (result) in
+            switch result {
+            case .success(let episodes):
+                episode = episodes
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            let detailView = UIHostingController(rootView: DetailSwiftUIView(character: character, location: location!, episodeData: episode!))
+            detailView.view.frame = UIScreen.main.bounds
+            
+            self.navigationItem.title = ""
+            self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+            self.navigationController?.navigationBar.tintColor = .white
+            
+            self.navigationController?.pushViewController(detailView, animated: true)
         }
     }
 }

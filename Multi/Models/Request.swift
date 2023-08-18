@@ -39,21 +39,81 @@ final class Request {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
             return
         }
-
+        
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-
+            
             guard let data = data else {
                 completion(.failure(NSError(domain: "No data received", code: -1, userInfo: nil)))
                 return
             }
-
+            
             do {
                 let location = try JSONDecoder().decode(Location.self, from: data)
                 completion(.success(location))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func getEpisodesForCharacter(characterName: String, completion: @escaping (Result<[Episode], Error>) -> Void) {
+        let url = URL(string: "https://rickandmortyapi.com/api/character")!
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No data received", code: -1, userInfo: nil)))
+                return
+            }
+            
+            do {
+                let characterResponse = try JSONDecoder().decode(CharacterResponse.self, from: data)
+                guard let character = characterResponse.results.first(where: { $0.name == characterName }) else {
+                    completion(.failure(NSError(domain: "Character not found", code: -1, userInfo: nil)))
+                    return
+                }
+                
+                let dispatchGroup = DispatchGroup()
+                var episodes: [Episode] = []
+                
+                for episodeURL in character.episode {
+                    dispatchGroup.enter()
+                    
+                    let episodeURL = URL(string: episodeURL)!
+                    
+                    URLSession.shared.dataTask(with: episodeURL) { (data, response, error) in
+                        defer { dispatchGroup.leave() }
+                        
+                        if let error = error {
+                            print("Episode request error: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        guard let data = data else {
+                            print("No episode data received")
+                            return
+                        }
+                        
+                        do {
+                            let episode = try JSONDecoder().decode(Episode.self, from: data)
+                            episodes.append(episode)
+                        } catch {
+                            print("Episode decoding error: \(error.localizedDescription)")
+                        }
+                    }.resume()
+                }
+                
+                dispatchGroup.notify(queue: .main) {
+                    completion(.success(episodes))
+                }
             } catch {
                 completion(.failure(error))
             }

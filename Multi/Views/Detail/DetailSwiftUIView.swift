@@ -4,6 +4,7 @@ import SwiftUI
 struct DetailSwiftUIView: View {
     @State var character: Character
     @State var location: Location
+    @State var episodeData: [Episode]
     
     var body: some View {
         ScrollView {
@@ -98,18 +99,18 @@ struct DetailSwiftUIView: View {
                         .foregroundColor(.white)
                         .padding(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                     
-                    ForEach(character.episode, id: \.self) { episode in
+                    ForEach(character.episode.indices, id: \.self) { index in
                         VStack(alignment: .leading) {
-                            Text(location.name)
-                                .font(.system(size: 17, weight: .bold))
+                            Text(episodeData[index].name)
+                                .font(.system(size: 17))
                                 .foregroundColor(.white)
                             
                             HStack() {
-                                Text(location.name)
+                                Text(formatCode(episodeData[index].episodeCode))
                                     .font(.system(size: 13))
                                     .foregroundColor(.green)
                                 Spacer()
-                                Text(location.type)
+                                Text(episodeData[index].airDate)
                                     .font(.system(size: 13))
                                     .foregroundColor(Color(hex: "#93989C"))
                             }
@@ -129,10 +130,19 @@ struct DetailSwiftUIView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(hex: "#040C1E"))
     }
+    
+    private func formatCode(_ code: String) -> String {
+        let components = code.components(separatedBy: "E")
+        let episode = components[1]
+        let trimmedEpisode = episode.trimmingCharacters(in: CharacterSet(charactersIn: "0"))
+        let season = components[0].replacingOccurrences(of: "S", with: "")
+        let trimmedSeason = season.trimmingCharacters(in: CharacterSet(charactersIn: "0"))
+        return "Episode: \(trimmedEpisode), Season: \(trimmedSeason)"
+    }
 }
 
 struct DetailSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailSwiftUIView(character: Character(id: 0, name: "", status: "", species: "", type: "", gender: "", origin: Origin.init(name: "", url: ""), location: Origin(name: "", url: ""), image: "", episode: [""], url: "", created: ""), location: Location(id: 1, name: "", type: "", dimension: "", residents: [""]))
+        DetailSwiftUIView(character: Character(id: 0, name: "", status: "", species: "", type: "", gender: "", origin: Origin.init(name: "", url: ""), location: Origin(name: "", url: ""), image: "", episode: [""], url: "", created: ""), location: Location(id: 1, name: "", type: "", dimension: "", residents: [""]), episodeData: [Episode(id: 1, name: "", airDate: "", episodeCode: "", characters: [""], url: "", created: "")])
     }
 }
