@@ -8,15 +8,15 @@ struct Character: Codable {
     let species: String
     let type: String
     let gender: String
-    let origin: Location
-    let location: Location
+    let origin: Origin
+    let location: Origin
     let image: String
     let episode: [String]
     let url: String
     let created: String
 }
 
-struct Location: Codable {
+struct Origin: Codable {
     let name: String
     let url: String
 }

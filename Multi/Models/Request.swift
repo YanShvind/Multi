@@ -33,6 +33,33 @@ final class Request {
         }.resume()
     }
     
+    func getLocationById(id: Int, completion: @escaping (Result<Location, Error>) -> Void) {
+        let urlString = "https://rickandmortyapi.com/api/location/\(id)"
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No data received", code: -1, userInfo: nil)))
+                return
+            }
+
+            do {
+                let location = try JSONDecoder().decode(Location.self, from: data)
+                completion(.success(location))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
     func loadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {

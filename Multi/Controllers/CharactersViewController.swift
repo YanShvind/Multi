@@ -85,13 +85,23 @@ extension CharactersViewController: UICollectionViewDataSource, UICollectionView
         collectionView.deselectItem(at: indexPath, animated: true)
         let character = charactersData[indexPath.row]
         
-        let detailView = UIHostingController(rootView: DetailSwiftUIView(character: character))
-        detailView.view.frame = UIScreen.main.bounds
-        
-        self.navigationItem.title = ""
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
-        
-        self.navigationController?.pushViewController(detailView, animated: true)
+        Request.shared.getLocationById(id: character.id) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let location):
+                    let detailView = UIHostingController(rootView: DetailSwiftUIView(character: character, location: location))
+                    detailView.view.frame = UIScreen.main.bounds
+                    
+                    self.navigationItem.title = ""
+                    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+                    self.navigationController?.navigationBar.tintColor = .white
+                    
+                    self.navigationController?.pushViewController(detailView, animated: true)
+                    
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
