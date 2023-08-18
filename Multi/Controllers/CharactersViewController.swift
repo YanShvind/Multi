@@ -5,7 +5,6 @@ import SwiftUI
 final class CharactersViewController: UIViewController {
     private lazy var charactersView: CharactersView = { [unowned self] in
         let view = CharactersView()
-        view.delegate = self
         view.setDelagates(collectionViewDelegate: self,
                           dataSource: self)
         return view
@@ -47,12 +46,6 @@ final class CharactersViewController: UIViewController {
     }
 }
 
-extension CharactersViewController: CharactersViewDelegate {
-    func charactersViewDidLoad() {
-
-    }
-}
-
 // MARK: - CollectionView Delegates
 extension CharactersViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -66,8 +59,11 @@ extension CharactersViewController: UICollectionViewDataSource, UICollectionView
         }
         
         let character = charactersData[indexPath.item]
-        cell.configure(name: character.name,
-                       imageURL: character.image)
+
+        if !character.name.isEmpty && !character.image.isEmpty {
+            cell.spinnerAnimateStopped()
+            cell.configure(name: character.name, imageURL: character.image)
+        }
         
         return cell
     }

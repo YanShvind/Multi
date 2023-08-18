@@ -143,6 +143,6 @@ struct DetailSwiftUIView: View {
 
 struct DetailSwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailSwiftUIView(character: Character(id: 0, name: "", status: "", species: "", type: "", gender: "", origin: Origin.init(name: "", url: ""), location: Origin(name: "", url: ""), image: "", episode: [""], url: "", created: ""), location: Location(id: 1, name: "", type: "", dimension: "", residents: [""]), episodeData: [Episode(id: 1, name: "", airDate: "", episodeCode: "", characters: [""], url: "", created: "")])
+        DetailSwiftUIView(character: Character(id: 0, name: "", status: "", species: "", type: "", gender: "", origin: Origin.init(name: "", url: ""), image: "", episode: [""]), location: Location(id: 1, name: "", type: ""), episodeData: [Episode(id: 1, name: "", airDate: "", episodeCode: "")])
     }
 }

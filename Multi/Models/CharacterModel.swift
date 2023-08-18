@@ -9,11 +9,8 @@ struct Character: Codable {
     let type: String
     let gender: String
     let origin: Origin
-    let location: Origin
     let image: String
     let episode: [String]
-    let url: String
-    let created: String
 }
 
 struct Origin: Codable {

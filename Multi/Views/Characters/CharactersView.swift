@@ -1,12 +1,7 @@
 
 import UIKit
 
-protocol CharactersViewDelegate: AnyObject {
-    func charactersViewDidLoad()
-}
-
 final class CharactersView: UIView {
-    weak var delegate: CharactersViewDelegate?
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -24,7 +19,6 @@ final class CharactersView: UIView {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor(red: 4/255, green: 12/255, blue: 30/255, alpha: 1)
-        delegate?.charactersViewDidLoad()
         setupUI()
     }
     

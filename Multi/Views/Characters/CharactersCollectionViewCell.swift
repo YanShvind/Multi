@@ -13,7 +13,7 @@ final class CharactersCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .systemBackground
@@ -22,12 +22,20 @@ final class CharactersCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.hidesWhenStopped = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         backgroundColor = UIColor(red: 38/255, green: 42/255, blue: 56/255, alpha: 1)
         layer.cornerRadius = 10
+        spinner.startAnimating()
         setupUI()
     }
     
@@ -43,6 +51,10 @@ final class CharactersCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    func spinnerAnimateStopped() {
+        spinner.stopAnimating()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -51,7 +63,7 @@ final class CharactersCollectionViewCell: UICollectionViewCell {
 //MARK: - SetupUI
 extension CharactersCollectionViewCell {
     private func setupUI() {
-        contentView.addSubviews(imageView, nameLabel)
+        contentView.addSubviews(imageView, nameLabel, spinner)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
@@ -62,7 +74,12 @@ extension CharactersCollectionViewCell {
             nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 7),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -7),
-            nameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            nameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
+            spinner.widthAnchor.constraint(equalToConstant: 100),
+            spinner.heightAnchor.constraint(equalToConstant: 100),
+            spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
 }
